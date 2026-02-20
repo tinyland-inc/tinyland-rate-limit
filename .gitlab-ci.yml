@@ -42,7 +42,13 @@ default:
   - corepack enable
   - corepack prepare pnpm@10.13.1 --activate
   - pnpm config set store-dir ${PNPM_STORE_DIR}
-  - pnpm install --frozen-lockfile
+  - |
+    if [ -f pnpm-lock.yaml ]; then
+      pnpm install --frozen-lockfile
+    else
+      echo "No lockfile found, generating..."
+      pnpm install
+    fi
 
 # ---------------------------------------------------------------------------
 # Stage: validate
