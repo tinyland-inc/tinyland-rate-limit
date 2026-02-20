@@ -1,5 +1,5 @@
 {
-  "name": "@tinyland-inc/tinyland-rate-limit",
+  "name": "@tummycrypt/tinyland-rate-limit",
   "version": "0.1.0",
   "description": "Framework-agnostic rate limiting and CSRF protection middleware",
   "type": "module",
@@ -12,7 +12,10 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "LICENSE"],
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -37,5 +40,9 @@
   },
   "engines": {
     "node": ">=22.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   }
 }

@@ -1,5 +1,5 @@
 /**
- * @tinyland-inc/tinyland-rate-limit
+ * @tummycrypt/tinyland-rate-limit
  *
  * Framework-agnostic rate limiting and CSRF protection middleware.
  * Extracted from SvelteKit middleware for reuse across frameworks.
