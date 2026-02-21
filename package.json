@@ -29,7 +29,7 @@
   "license": "Zlib AND LicenseRef-Tinyland-Proprietary",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/tinyland/tinyland.dev",
+    "url": "https://github.com/tinyland-inc/tinyland.dev",
     "directory": "packages/tinyland-rate-limit"
   },
   "dependencies": {},
