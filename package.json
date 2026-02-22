@@ -1,6 +1,6 @@
 {
   "name": "@tummycrypt/tinyland-rate-limit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Framework-agnostic rate limiting and CSRF protection middleware",
   "type": "module",
   "main": "./dist/index.js",
