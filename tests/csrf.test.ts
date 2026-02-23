@@ -11,9 +11,9 @@ import {
 import { configureRateLimit, resetRateLimitConfig } from '../src/config.js';
 import type { CookieJar, MiddlewareRequestEvent, ResolveFn } from '../src/types.js';
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
+
+
+
 
 function createMockEvent(
   overrides: {
@@ -59,18 +59,18 @@ function createMockResolve(): ResolveFn {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
+
+
+
 
 describe('csrf', () => {
   beforeEach(() => {
     resetRateLimitConfig();
   });
 
-  // -----------------------------------------------------------------------
-  // generateCSRFToken
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('generateCSRFToken', () => {
     it('should return a string', () => {
       const token = generateCSRFToken();
@@ -102,9 +102,9 @@ describe('csrf', () => {
     });
   });
 
-  // -----------------------------------------------------------------------
-  // timingSafeEqual
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('timingSafeEqual', () => {
     it('should return true for equal strings', () => {
       expect(timingSafeEqual('abc', 'abc')).toBe(true);
@@ -119,8 +119,8 @@ describe('csrf', () => {
     });
 
     it('should return true for empty strings', () => {
-      // Both have length 0, length check passes.
-      // crypto.timingSafeEqual with zero-length buffers returns true.
+      
+      
       expect(timingSafeEqual('', '')).toBe(true);
     });
 
@@ -139,9 +139,9 @@ describe('csrf', () => {
     });
   });
 
-  // -----------------------------------------------------------------------
-  // csrfProtection
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('csrfProtection', () => {
     it('should skip GET requests', async () => {
       const event = createMockEvent({ method: 'GET', pathname: '/admin/dashboard' });
@@ -252,7 +252,7 @@ describe('csrf', () => {
         method: 'POST',
         pathname: '/admin/dashboard',
       });
-      // No cookie, but page route - should just return
+      
       await expect(csrfProtection(event)).resolves.toBeUndefined();
     });
 
@@ -262,7 +262,7 @@ describe('csrf', () => {
         method: 'POST',
         pathname: '/api/admin/settings',
         cookieToken: token,
-        // no headerToken
+        
       });
       await expect(csrfProtection(event)).rejects.toHaveProperty('status', 403);
     });
@@ -320,9 +320,9 @@ describe('csrf', () => {
         method: 'POST',
         pathname: '/admin/settings',
         cookieToken: token,
-        // No header token - but this is a page route, not /api/
+        
       });
-      // Page routes don't require token validation in the header
+      
       await expect(csrfProtection(event)).resolves.toBeUndefined();
     });
 
@@ -361,9 +361,9 @@ describe('csrf', () => {
     });
   });
 
-  // -----------------------------------------------------------------------
-  // CSRF_EXCLUDE_PATHS
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('CSRF_EXCLUDE_PATHS', () => {
     it('should include /api/health', () => {
       expect(CSRF_EXCLUDE_PATHS).toContain('/api/health');
@@ -414,9 +414,9 @@ describe('csrf', () => {
     });
   });
 
-  // -----------------------------------------------------------------------
-  // setCSRFCookie
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('setCSRFCookie', () => {
     it('should set cookie with correct name', () => {
       const cookies: CookieJar = { get: vi.fn(), set: vi.fn() };
@@ -499,9 +499,9 @@ describe('csrf', () => {
     });
   });
 
-  // -----------------------------------------------------------------------
-  // getCSRFToken
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('getCSRFToken', () => {
     it('should return existing token from cookie', () => {
       const existingToken = 'existing-token-value';
@@ -551,9 +551,9 @@ describe('csrf', () => {
     });
   });
 
-  // -----------------------------------------------------------------------
-  // csrf middleware Handle
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('csrf middleware Handle', () => {
     it('should call csrfProtection and resolve on success', async () => {
       const event = createMockEvent({ method: 'GET', pathname: '/' });
@@ -578,8 +578,8 @@ describe('csrf', () => {
         pathname: '/admin/login',
       });
       const resolve = createMockResolve();
-      // /admin/login is excluded, so csrfProtection won't throw,
-      // but if it did (hypothetically), the middleware allows it through
+      
+      
       const response = await csrf({ event, resolve });
       expect(response.status).toBe(200);
     });
@@ -618,7 +618,7 @@ describe('csrf', () => {
       const event = createMockEvent({
         method: 'POST',
         pathname: '/api/admin/settings',
-        // No cookie token -> will throw 403
+        
       });
       const resolve = createMockResolve();
       await expect(csrf({ event, resolve })).rejects.toHaveProperty('status', 403);
@@ -644,18 +644,18 @@ describe('csrf', () => {
           error: vi.fn(),
           debug: vi.fn(),
         }),
-        // Make csrfProtection throw for non-admin by using a custom error factory
+        
         createHttpError: (status: number, message: string): never => {
           throw Object.assign(new Error(message), { status, body: { message } });
         },
       });
 
-      // Non-admin routes don't trigger CSRF validation, so this won't throw
-      // Testing that the warn path works conceptually
+      
+      
       const event = createMockEvent({ method: 'POST', pathname: '/public' });
       const resolve = createMockResolve();
       await csrf({ event, resolve });
-      // Non-admin routes skip CSRF, so warn is not called
+      
     });
 
     it('should log error details when csrfProtection throws', async () => {
@@ -672,14 +672,14 @@ describe('csrf', () => {
       const event = createMockEvent({
         method: 'POST',
         pathname: '/api/admin/settings',
-        // No cookie -> will throw
+        
       });
       const resolve = createMockResolve();
 
       try {
         await csrf({ event, resolve });
       } catch {
-        // expected
+        
       }
 
       expect(errorFn).toHaveBeenCalled();
@@ -709,9 +709,9 @@ describe('csrf', () => {
     });
   });
 
-  // -----------------------------------------------------------------------
-  // DI config integration
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('DI config integration', () => {
     it('should use isDevelopment from config for debug logging', async () => {
       const debugFn = vi.fn();
@@ -733,7 +733,7 @@ describe('csrf', () => {
         headerToken: token,
       });
       await csrfProtection(event);
-      // Debug should be called for successful validation in dev mode
+      
       expect(debugFn).toHaveBeenCalled();
     });
 
@@ -790,7 +790,7 @@ describe('csrf', () => {
       try {
         await csrfProtection(event);
       } catch {
-        // expected
+        
       }
 
       expect(errorFn).toHaveBeenCalled();
@@ -812,7 +812,7 @@ describe('csrf', () => {
       try {
         await csrfProtection(event);
       } catch {
-        // expected
+        
       }
 
       expect(customError).toHaveBeenCalledWith(403, expect.any(String));

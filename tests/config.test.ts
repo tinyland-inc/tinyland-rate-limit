@@ -63,7 +63,7 @@ describe('config', () => {
 
     it('should accept empty config', () => {
       configureRateLimit({});
-      // Should not throw
+      
       const result = getRateLimitConfig();
       expect(result.isProduction).toBe(false);
     });
@@ -105,7 +105,7 @@ describe('config', () => {
 
     it('should return a noop logger by default', () => {
       const logger = getRateLimitConfig().getLogger();
-      // Should not throw when called
+      
       logger.info('test');
       logger.warn('test');
       logger.error('test');
@@ -128,8 +128,8 @@ describe('config', () => {
       configureRateLimit({ isProduction: true });
       const result = getRateLimitConfig();
       expect(result.isProduction).toBe(true);
-      expect(result.isDevelopment).toBe(false); // default
-      expect(result.cleanupIntervalMs).toBe(60000); // default
+      expect(result.isDevelopment).toBe(false); 
+      expect(result.cleanupIntervalMs).toBe(60000); 
     });
 
     it('should return a Required type with all fields defined', () => {
@@ -178,7 +178,7 @@ describe('config', () => {
       resetRateLimitConfig();
       const logger = getRateLimitConfig().getLogger();
       expect(logger).not.toBe(customLogger);
-      // Should still work without throwing
+      
       logger.info('test');
     });
   });
@@ -192,7 +192,7 @@ describe('config', () => {
         expect(err).toHaveProperty('status', 429);
         return;
       }
-      // Should not reach here
+      
       expect.fail('Expected createHttpError to throw');
     });
 

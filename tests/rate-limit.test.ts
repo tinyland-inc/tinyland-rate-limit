@@ -16,9 +16,9 @@ import {
 import { configureRateLimit, resetRateLimitConfig } from '../src/config.js';
 import type { MiddlewareRequestEvent, ResolveFn, RateLimitConfig } from '../src/types.js';
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
+
+
+
 
 function createMockEvent(
   overrides: Partial<MiddlewareRequestEvent> & {
@@ -48,9 +48,9 @@ function createMockResolve(): ResolveFn {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
+
+
+
 
 describe('rate-limit', () => {
   beforeEach(() => {
@@ -65,9 +65,9 @@ describe('rate-limit', () => {
     stopCleanup();
   });
 
-  // -----------------------------------------------------------------------
-  // createRateLimiter
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('createRateLimiter', () => {
     it('should create a function', () => {
       const limiter = createRateLimiter({ windowMs: 1000, maxRequests: 1 });
@@ -85,9 +85,9 @@ describe('rate-limit', () => {
     });
   });
 
-  // -----------------------------------------------------------------------
-  // Rate limiting logic
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('rate limiting logic', () => {
     it('should allow the first request', async () => {
       const limiter = createRateLimiter({ windowMs: 60000, maxRequests: 5 });
@@ -98,34 +98,34 @@ describe('rate-limit', () => {
     it('should allow requests under the limit', async () => {
       const limiter = createRateLimiter({ windowMs: 60000, maxRequests: 3 });
       const event = createMockEvent();
-      await limiter(event); // 1
-      await expect(limiter(event)).resolves.toBeUndefined(); // 2
+      await limiter(event); 
+      await expect(limiter(event)).resolves.toBeUndefined(); 
     });
 
     it('should throw 429 at the limit', async () => {
       const limiter = createRateLimiter({ windowMs: 60000, maxRequests: 2 });
       const event = createMockEvent();
-      await limiter(event); // 1
-      await limiter(event); // 2 (hits becomes 2)
-      await expect(limiter(event)).rejects.toHaveProperty('status', 429); // 3rd call
+      await limiter(event); 
+      await limiter(event); 
+      await expect(limiter(event)).rejects.toHaveProperty('status', 429); 
     });
 
     it('should throw 429 over the limit', async () => {
       const limiter = createRateLimiter({ windowMs: 60000, maxRequests: 1 });
       const event = createMockEvent();
-      await limiter(event); // 1
+      await limiter(event); 
       await expect(limiter(event)).rejects.toHaveProperty('status', 429);
     });
 
     it('should reset after window expiry', async () => {
       const limiter = createRateLimiter({ windowMs: 1000, maxRequests: 1 });
       const event = createMockEvent();
-      await limiter(event); // 1
+      await limiter(event); 
 
-      // Advance past window
+      
       vi.advanceTimersByTime(1001);
 
-      // Should be allowed again (new window)
+      
       await expect(limiter(event)).resolves.toBeUndefined();
     });
 
@@ -198,9 +198,9 @@ describe('rate-limit', () => {
       const limiter = createRateLimiter({ windowMs: 60000, maxRequests: 5 });
       const event = createMockEvent();
 
-      await limiter(event); // hit 1
-      await limiter(event); // hit 2
-      await limiter(event); // hit 3
+      await limiter(event); 
+      await limiter(event); 
+      await limiter(event); 
 
       const store = getStore();
       const key = '127.0.0.1:/';
@@ -232,9 +232,9 @@ describe('rate-limit', () => {
     });
   });
 
-  // -----------------------------------------------------------------------
-  // Key generation
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('key generation', () => {
     it('should use IP:path as default key', async () => {
       const limiter = createRateLimiter({ windowMs: 60000, maxRequests: 5 });
@@ -264,14 +264,14 @@ describe('rate-limit', () => {
       const event2 = createMockEvent({ ip: '2.2.2.2', pathname: '/same' });
 
       await limiter(event1);
-      // Second IP should not be blocked
+      
       await expect(limiter(event2)).resolves.toBeUndefined();
     });
   });
 
-  // -----------------------------------------------------------------------
-  // Preset configs
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('preset configs', () => {
     it('login: 5 requests per 15 minutes', () => {
       expect(rateLimitConfigs.login.maxRequests).toBe(5);
@@ -327,9 +327,9 @@ describe('rate-limit', () => {
     });
   });
 
-  // -----------------------------------------------------------------------
-  // Named rate limiters
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('named rate limiters', () => {
     it('loginRateLimiter is a function', () => {
       expect(typeof loginRateLimiter).toBe('function');
@@ -353,11 +353,11 @@ describe('rate-limit', () => {
 
     it('loginRateLimiter enforces login preset', async () => {
       const event = createMockEvent({ pathname: '/admin/login' });
-      // Allow 5 requests
+      
       for (let i = 0; i < 5; i++) {
         await loginRateLimiter(event);
       }
-      // 6th should fail
+      
       await expect(loginRateLimiter(event)).rejects.toHaveProperty('status', 429);
     });
 
@@ -394,9 +394,9 @@ describe('rate-limit', () => {
     });
   });
 
-  // -----------------------------------------------------------------------
-  // rateLimit middleware Handle
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('rateLimit middleware', () => {
     it('should skip /_app paths', async () => {
       const event = createMockEvent({ pathname: '/_app/immutable/chunks/main.js' });
@@ -440,8 +440,8 @@ describe('rate-limit', () => {
 
     it('should not apply login limiter for GET /admin/login', async () => {
       const resolve = createMockResolve();
-      // GET to /admin/login should not trigger login limiter but might trigger api limiter
-      // It doesn't match any specific route so it just passes
+      
+      
       const event = createMockEvent({ method: 'GET', pathname: '/admin/login' });
       await expect(rateLimit({ event, resolve })).resolves.toBeDefined();
     });
@@ -535,19 +535,19 @@ describe('rate-limit', () => {
     });
 
     it('should handle non-status errors gracefully', async () => {
-      // Use a custom error factory that throws a non-status error
+      
       const limiter = createRateLimiter({ windowMs: 60000, maxRequests: 1 });
       const event = createMockEvent({ pathname: '/some-path' });
       const resolve = createMockResolve();
 
-      // This path doesn't match any specific rate limiter, so it should pass through
+      
       await expect(rateLimit({ event, resolve })).resolves.toBeDefined();
     });
 
     it('should re-throw errors with status property', async () => {
       const resolve = createMockResolve();
 
-      // Exhaust login limiter
+      
       for (let i = 0; i < 5; i++) {
         const event = createMockEvent({ method: 'POST', pathname: '/admin/login' });
         await rateLimit({ event, resolve });
@@ -566,7 +566,7 @@ describe('rate-limit', () => {
       const event = createMockEvent({ pathname: '/page' });
       const resolve = createMockResolve();
       const response = await rateLimit({ event, resolve });
-      // No entry in store for this key since no rate limiter matched
+      
       expect(response.headers.get('X-RateLimit-Limit')).toBeNull();
     });
 
@@ -574,15 +574,15 @@ describe('rate-limit', () => {
       const resolve = createMockResolve();
       const event = createMockEvent({ pathname: '/user/reset-password/confirm' });
       await rateLimit({ event, resolve });
-      // Should match the /reset-password includes check
+      
       const store = getStore();
       expect(store.size).toBeGreaterThan(0);
     });
   });
 
-  // -----------------------------------------------------------------------
-  // Cleanup
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('cleanup', () => {
     it('should remove expired entries', async () => {
       const limiter = createRateLimiter({ windowMs: 1000, maxRequests: 5 });
@@ -592,7 +592,7 @@ describe('rate-limit', () => {
 
       startCleanup();
 
-      // Advance past window + cleanup interval
+      
       vi.advanceTimersByTime(61000);
 
       expect(getStore().size).toBe(0);
@@ -605,7 +605,7 @@ describe('rate-limit', () => {
       const event = createMockEvent();
       await limiter(event);
 
-      // Advance by cleanup interval but not past window
+      
       vi.advanceTimersByTime(61000);
 
       expect(getStore().size).toBe(1);
@@ -614,7 +614,7 @@ describe('rate-limit', () => {
     it('should stop cleanup when stopCleanup is called', () => {
       startCleanup();
       stopCleanup();
-      // No error should occur - just verify it doesn't throw
+      
     });
 
     it('clearStore should remove all entries', async () => {
@@ -632,13 +632,13 @@ describe('rate-limit', () => {
       stopCleanup();
       startCleanup();
       stopCleanup();
-      // Should not throw
+      
     });
   });
 
-  // -----------------------------------------------------------------------
-  // Error factory integration
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('error factory', () => {
     it('should use createHttpError from config', async () => {
       const customError = vi.fn().mockImplementation((status: number, msg: string): never => {
@@ -653,7 +653,7 @@ describe('rate-limit', () => {
       try {
         await limiter(event);
       } catch {
-        // expected
+        
       }
 
       expect(customError).toHaveBeenCalledWith(429, expect.stringContaining('Too many requests'));
@@ -673,9 +673,9 @@ describe('rate-limit', () => {
     });
   });
 
-  // -----------------------------------------------------------------------
-  // DI config integration
-  // -----------------------------------------------------------------------
+  
+  
+  
   describe('DI config integration', () => {
     it('should use logger from config for errors in middleware', async () => {
       const errorFn = vi.fn();
@@ -688,19 +688,19 @@ describe('rate-limit', () => {
         }),
       });
 
-      // Create a scenario where a non-status error occurs in the catch block
-      // This is hard to trigger directly, but we can verify logger is accessible
+      
+      
       const resolve = createMockResolve();
       const event = createMockEvent({ pathname: '/about' });
       await rateLimit({ event, resolve });
-      // Logger should be available (no errors about missing logger)
+      
     });
 
     it('should use configured cleanupIntervalMs', () => {
       configureRateLimit({ cleanupIntervalMs: 5000 });
-      // Start cleanup with the configured interval
+      
       startCleanup();
-      // No error means it used the config
+      
       stopCleanup();
     });
   });
