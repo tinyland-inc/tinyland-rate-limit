@@ -1,11 +1,11 @@
-/**
- * @tummycrypt/tinyland-rate-limit
- *
- * Framework-agnostic rate limiting and CSRF protection middleware.
- * Extracted from SvelteKit middleware for reuse across frameworks.
- */
 
-// Configuration / DI
+
+
+
+
+
+
+
 export {
   configureRateLimit,
   getRateLimitConfig,
@@ -14,7 +14,7 @@ export {
   type RateLimitPackageConfig,
 } from './config.js';
 
-// Types
+
 export type {
   CookieJar,
   CookieOptions,
@@ -26,7 +26,7 @@ export type {
   ResolveFn,
 } from './types.js';
 
-// Rate limiting
+
 export {
   apiRateLimiter,
   clearStore,
@@ -42,7 +42,7 @@ export {
   userCreationRateLimiter,
 } from './rate-limit.js';
 
-// CSRF protection
+
 export {
   csrf,
   CSRF_EXCLUDE_PATHS,
