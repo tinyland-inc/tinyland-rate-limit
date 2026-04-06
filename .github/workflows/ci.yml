@@ -7,6 +7,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
 jobs:
   ci:
     uses: tinyland-inc/ci-templates/.github/workflows/npm-publish.yml@main
