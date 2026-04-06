@@ -1,0 +1,13 @@
+name: CI
+on:
+  push:
+    tags: ["v*"]
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  ci:
+    uses: tinyland-inc/ci-templates/.github/workflows/npm-publish.yml@main
+    secrets: inherit
