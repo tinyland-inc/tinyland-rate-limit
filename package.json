@@ -1,6 +1,6 @@
 {
   "name": "@tummycrypt/tinyland-rate-limit",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "Framework-agnostic rate limiting and CSRF protection middleware",
   "type": "module",
   "main": "./dist/index.js",
@@ -20,30 +20,35 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run build",
-    "test": "vitest",
+    "prepublishOnly": "pnpm build && pnpm check:package",
+    "test": "vitest run",
     "test:coverage": "vitest --coverage",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check:package": "publint"
   },
   "author": "Tinyland.dev",
   "license": "Zlib AND LicenseRef-Tinyland-Proprietary",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tinyland-inc/tinyland.dev",
-    "directory": "packages/tinyland-rate-limit"
+    "url": "git+https://github.com/tinyland-inc/tinyland-rate-limit.git"
   },
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^20.0.0",
     "typescript": "^5.0.0",
-    "vitest": "^4.0.0"
+    "vitest": "^4.0.0",
+    "publint": "^0.3.18"
   },
   "engines": {
     "node": ">=22.0.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
-    "access": "public",
-    "provenance": true
+    "access": "public"
+  },
+  "packageManager": "pnpm@10.13.1",
+  "homepage": "https://github.com/tinyland-inc/tinyland-rate-limit",
+  "bugs": {
+    "url": "https://github.com/tinyland-inc/tinyland-rate-limit/issues"
   }
 }
