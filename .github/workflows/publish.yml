@@ -1,14 +1,19 @@
-name: CI
+name: Publish
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  release:
+    types: [published]
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run without publishing"
+        required: false
+        type: boolean
+        default: true
 permissions:
   actions: read
   contents: read
-  packages: read
+  id-token: write
+  packages: write
 jobs:
   package:
     uses: tinyland-inc/ci-templates/.github/workflows/js-bazel-package.yml@21e0093a7586931ee69d716387e00556c6da7738
@@ -29,5 +34,6 @@ jobs:
       package_dir: ./bazel-bin/pkg
       npm_access: public
       github_package_name: "@tummycrypt/tinyland-rate-limit"
-      dry_run: true
-    secrets: inherit
+      dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
