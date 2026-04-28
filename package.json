@@ -1,6 +1,6 @@
 {
   "name": "@tummycrypt/tinyland-rate-limit",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Framework-agnostic rate limiting and CSRF protection middleware",
   "type": "module",
   "main": "./dist/index.js",
@@ -37,7 +37,9 @@
     "@types/node": "^20.0.0",
     "typescript": "^5.0.0",
     "vitest": "^4.0.0",
-    "publint": "^0.3.18"
+    "publint": "^0.3.18",
+    "pg": "^8.11.0",
+    "@types/pg": "^8.11.0"
   },
   "engines": {
     "node": ">=22.0.0"
@@ -50,5 +52,13 @@
   "homepage": "https://github.com/tinyland-inc/tinyland-rate-limit",
   "bugs": {
     "url": "https://github.com/tinyland-inc/tinyland-rate-limit/issues"
+  },
+  "peerDependencies": {
+    "pg": "^8.11.0"
+  },
+  "peerDependenciesMeta": {
+    "pg": {
+      "optional": true
+    }
   }
 }
