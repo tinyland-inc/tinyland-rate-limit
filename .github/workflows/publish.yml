@@ -16,7 +16,7 @@ permissions:
   packages: write
 jobs:
   package:
-    uses: tinyland-inc/ci-templates/.github/workflows/js-bazel-package.yml@21e0093a7586931ee69d716387e00556c6da7738
+    uses: tinyland-inc/ci-templates/.github/workflows/js-bazel-package.yml@0d88ad73c6884f4854624d3a2ec4b6ce41f5bea8
     with:
       runner_mode: shared
       shared_runner_labels_json: ${{ vars.PRIMARY_LINUX_RUNNER_LABELS_JSON }}
@@ -33,7 +33,6 @@ jobs:
       bazel_targets: "//:pkg //:test"
       package_dir: ./bazel-bin/pkg
       npm_access: public
-      github_package_name: "@tummycrypt/tinyland-rate-limit"
+      github_package_name: "@tinyland-inc/tinyland-rate-limit"
       dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
-    secrets:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    secrets: inherit
