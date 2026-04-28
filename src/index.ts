@@ -52,3 +52,19 @@ export {
   setCSRFCookie,
   timingSafeEqual,
 } from './csrf.js';
+
+
+export {
+  createThrottle,
+  createMemoryThrottleStore,
+  createPgThrottleStore,
+  createCompositeThrottleStore,
+  pgThrottleTableDdl,
+  type ThrottleConfig,
+  type ThrottleRecord,
+  type ThrottleStatus,
+  type ThrottleStore,
+  type ThrottleClient,
+  type CreateThrottleConfig,
+  type PgThrottleStoreConfig,
+} from './throttle.js';

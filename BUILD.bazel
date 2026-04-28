@@ -45,7 +45,7 @@ npm_package(
         ":tinyland_rate_limit",
     ],
     package = "@tummycrypt/tinyland-rate-limit",
-    version = "0.2.2",
+    version = "0.3.0",
     visibility = ["//visibility:public"],
 )
 
